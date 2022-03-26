@@ -1,3 +1,3 @@
 # AppOrcamentoPessoal
 
-Att 1.1.0 26/03/2022 hora(10:34)
+Att 1.2.0 26/03/2022 hora(10:44)
