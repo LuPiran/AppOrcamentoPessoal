@@ -9,7 +9,43 @@ class Despesa{
         this.descricao = descricao
         this.valor = valor
     }
+
+    validarDados(){
+        for(let i in this){
+            if(this[i] == undefined || this[i] == '' || this[i] == null){
+                
+            }
+        }
+    }
 }
+
+//gravando os dados em localStorage
+class Bd{
+
+    constructor(){
+        let id = localStorage.getItem('id')
+
+        if(id === null){
+            localStorage.setItem('id', 0)
+        }
+    }
+
+    getProximoId(){
+        let proximoId = localStorage.getItem('id')
+        return parseInt(proximoId) + 1
+    }
+
+
+    gravar(d){
+        let id = this.getProximoId()
+
+        localStorage.setItem(id, JSON.stringify(d))
+
+        localStorage.setItem('id', id)
+    }
+}
+
+let bd = new Bd()
 
 //Recuperando o valor dos campos pelo ID
 function cadastrarDespesa(){
@@ -32,11 +68,11 @@ function cadastrarDespesa(){
         valor.value
     )
 
-    gravar(despesa)
+    if(despesa.validarDados()){
+        bd.gravar(despesa)
+    }else{
+
+    }
+    
 }
 
-//Local Storage
-function gravar(d){
-    //transformando o objeto literal em um parametro JSON
-    localStorage.setItem('despesa', JSON.stringify(d))
-}
