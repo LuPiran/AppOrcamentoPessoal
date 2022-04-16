@@ -44,6 +44,32 @@ class Bd{
 
         localStorage.setItem('id', id)
     }
+
+    recuperarTodosRegistros(){
+        //array de despesas
+        let despesas = Array()
+
+        let id = localStorage.getItem('id')
+
+        //recuperar todas as despesas cadastradas em localStorage
+        for(let i = 1; i<=id; i++){
+        //recuperar a despesa
+        let despesa = JSON.parse(localStorage.getItem(i))
+
+        //verificar se exite a possibilidade de haver indices que foram pulados/removidos
+        //nestes casos vamos pular esses indices
+
+        if(despesa === null){
+            continue
+        }
+        despesas.push(despesa)
+       }
+
+       return despesas
+    }
+    pesquisar(despesa){
+
+    }
 }
 
 let bd = new Bd()
@@ -77,7 +103,16 @@ function cadastrarDespesa(){
         document.getElementById('modal_conteudo').innerHTML = "Despesa foi cadastrada com sucesso!"
         document.getElementById('modal_btn').innerHTML = 'Voltar'
         document.getElementById('modal_btn').className = 'btn btn-success'
+
+        //dialog de sucesso
         $('#modalRegistraDespesa').modal('show')
+
+        ano.value = ''
+        mes.value = ''
+        dia.value = ''
+        tipo.value = ''
+        descricao.value = ''
+        valor.value = ''
     }else{
         document.getElementById('modal_titulo').innerHTML = 'Erro na inclusão do registro'
         document.getElementById('modal_titulo_div').className = "modal-header text-danger"
@@ -87,5 +122,63 @@ function cadastrarDespesa(){
         $('#modalRegistraDespesa').modal('show')
     }
     
+}
+
+function carregaListaDespesas(){
+    let despesas = Array()
+    despesas = bd.recuperarTodosRegistros()
+
+    console.log(despesas)
+    
+    //selecionando o elemento tbody da tabela
+    let listaDespesas = document.getElementById('listaDespesas')
+
+    /*
+     <tr>
+        <td>15/03/20</td>
+        <td>Alimentação</td>
+        <td>Compras do mês</td>
+         <td>444.00</td>
+     </tr>
+    */
+
+     //percorrer o array despesas, listando cada despesa de forma dinamica
+     despesas.forEach(function(d){
+         
+        //criando a linha (tr)
+        let linha = listaDespesas.insertRow()
+
+        //criando as colunas(td)
+        linha.insertCell(0).innerHTML = `${d.dia}/${d.mes}/${d.ano}`
+        
+        //ajustar o tipo
+        switch(d.tipo){
+            case '1': d.tipo = 'Alimentação'
+                break
+            case '2': d.tipo = 'Educação'
+                break
+            case '3': d.tipo = 'Lazer'
+                break
+            case '4': d.tipo = 'Saúde'
+                break
+            case '5': d.tipo = 'Transporte'
+                break
+        }
+        linha.insertCell(1).innerHTML = d.tipo
+        linha.insertCell(2).innerHTML = d.descricao
+        linha.insertCell(3).innerHTML = d.valor
+     })
+}
+
+function pesquisarDespesa(){
+    let ano = document.getElementById('ano').value
+    let mes= document.getElementById('mes').value
+    let dia = document.getElementById('dia').value
+    let tipo = document.getElementById('tipo').value
+    let descricao = document.getElementById('descricao').value
+    let valor = document.getElementById('valor').value
+
+    let despesa = new Despesa(ano, mes, dia, tipo, descricao, valor)
+    bd.pesquisar(despesa)
 }
 
